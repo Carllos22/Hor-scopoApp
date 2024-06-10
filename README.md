@@ -1,0 +1,2 @@
+# Hor-scopoApp
+Horóscopo class
