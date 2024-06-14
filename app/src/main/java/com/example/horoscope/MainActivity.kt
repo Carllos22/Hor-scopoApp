@@ -2,9 +2,13 @@ package com.example.horoscope
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import com.example.horoscopeapp.HoroscopeAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 
@@ -29,6 +33,38 @@ class MainActivity : AppCompatActivity() {
         //recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_activity_main, menu)
+
+        val searchViewItem = menu.findItem(R.id.menu_search)
+        val searchView = searchViewItem.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                horoscopeList = HoroscopeProvider.findAll()
+                return true
+            }
+        })
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_share -> {
+                Log.i("MENU", "Click en el menu de busqueda")
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     fun navigateToDetail(horoscope: Horoscope) {
         val intent: Intent = Intent(this, DetailActivity::class.java)
         intent.putExtra(DetailActivity.EXTRA_HOROSCOPE_ID, horoscope.id)

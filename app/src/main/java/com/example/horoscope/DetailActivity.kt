@@ -2,6 +2,10 @@ package com.example.horoscope
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 
@@ -17,19 +21,32 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        val id = intent.getStringExtra(EXTRA_HOROSCOPE_ID)
+        //val id = intent.getStringExtra(EXTRA_HOROSCOPE_ID)
+        val id: String = intent.getStringExtra(EXTRA_HOROSCOPE_ID)!!
 
-        //Comentamos las dos variables para añadir a la funcion onCreate,
-        //el HoroscopeProvider y los busque por sus respectivos ID.
-        //val name = intent.getIntExtra("HOROSCOPE_NAME", -1)
-        //val logo = intent.getIntExtra("HOROSCOPE_LOGO", -1)
-        horoscope = HoroscopeProvider.findById(id!!)!!
+        //horoscope = HoroscopeProvider.findById(id!!)!!
+        horoscope = HoroscopeProvider.findById(id)!!
 
-        //Volvemos a comentar estos dos finView porque ahora mostraremos,
-        //el texto y la imagen a través de la llamada en el DetailActivity
-        //findViewById<TextView>(R.id.textView).setText(name)
-        //findViewById<ImageView>(R.id.imageView).setImageResource(logo)
         findViewById<TextView>(R.id.textView).setText(horoscope.name)
         findViewById<ImageView>(R.id.imageView).setImageResource(horoscope.logo)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_activity_detail, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_favorite -> {
+                Log.i("MENU", "Click en el menu de favorito")
+                true
+            }
+            R.id.menu_share -> {
+                Log.i("MENU", "Click en el menu de compartir")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
