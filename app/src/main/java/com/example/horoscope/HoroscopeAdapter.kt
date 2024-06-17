@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.horoscope.Horoscope
 import com.example.horoscope.R
 
-class HoroscopeAdapter(private val dataset: List<Horoscope>, private val onItemClickListener: (Int) -> Unit) :
+class HoroscopeAdapter(private var dataSet: List<Horoscope>, private val onItemClickListener: (Int) -> Unit) :
     RecyclerView.Adapter<HoroscopeViewHolder>() {
 
-    // Con este método creamos nuevas celas y creamos las necesarias para mostrarlas
+    // Con este método creamos nuevas celdas y creamos las necesarias para mostrarlas
     //A demás intenta reciclar las que no se ven
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HoroscopeViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -22,16 +22,21 @@ class HoroscopeAdapter(private val dataset: List<Horoscope>, private val onItemC
     }
     // Este método simplemente es para decir cuantos elementos queremos mostrar
     override fun getItemCount(): Int {
-        return dataset.size
+        return dataSet.size
     }
     // Este método se llama cada vez que se va a visualizar una celda,
     // y lo utilizaremos para mostrar los datos de esa celda
     override fun onBindViewHolder(holder: HoroscopeViewHolder, position: Int) {
-        val horoscope = dataset[position]
+        val horoscope = dataSet[position]
         holder.render(horoscope)
         holder.itemView.setOnClickListener {
             onItemClickListener(position)
         }
+    }
+
+    fun updateData (newDataset: List<Horoscope>) {
+        dataSet = newDataset
+        notifyDataSetChanged()
     }
 
 }
