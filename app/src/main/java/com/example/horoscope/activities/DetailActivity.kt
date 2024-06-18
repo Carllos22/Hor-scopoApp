@@ -45,6 +45,10 @@ class DetailActivity : AppCompatActivity() {
 
         textView.setText(horoscope.name)
         imageView.setImageResource(horoscope.logo)
+
+        supportActionBar?.setTitle(horoscope.name)
+        supportActionBar?.setSubtitle(horoscope.description)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     fun setFavoriteIcon () {
@@ -64,6 +68,10 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
             R.id.menu_favorite -> {
                 if (isFavorite) {
                     session.setFavoriteHoroscope("")
