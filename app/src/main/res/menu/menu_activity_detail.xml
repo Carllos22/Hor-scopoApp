@@ -5,7 +5,7 @@
         android:id="@+id/menu_favorite"
         android:icon="@drawable/ic_favorite"
         android:title="@string/menu_favorite"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         android:iconTint="@color/favorite"
         app:iconTint="@color/favorite" />
 
@@ -13,6 +13,6 @@
         android:id="@+id/menu_share"
         android:icon="@drawable/ic_share"
         android:title="@string/menu_share"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
 </menu>
