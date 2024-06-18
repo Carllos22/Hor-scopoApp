@@ -1,19 +1,17 @@
-package com.example.horoscopeapp
+package com.example.horoscope.adapters
 
-
+import android.graphics.Color
+import android.text.SpannableString
+import android.text.style.BackgroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.horoscope.Horoscope
 import com.example.horoscope.R
-import android.graphics.Color
-import android.text.Highlights
-import android.text.SpannableString
-import android.text.style.BackgroundColorSpan
-import android.util.Log
+import com.example.horoscope.data.Horoscope
+import com.example.horoscope.utils.highlight
 
 
 class HoroscopeAdapter(private var dataSet: List<Horoscope>, private val onItemClickListener: (Int) -> Unit) :
@@ -26,12 +24,15 @@ class HoroscopeAdapter(private var dataSet: List<Horoscope>, private val onItemC
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HoroscopeViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_horoscope, parent, false)
+
         return HoroscopeViewHolder(view)
     }
+
     // Este método simplemente es para decir cuantos elementos queremos mostrar
     override fun getItemCount(): Int {
         return dataSet.size
     }
+
     // Este método se llama cada vez que se va a visualizar una celda,
     // y lo utilizaremos para mostrar los datos de esa celda
     override fun onBindViewHolder(holder: HoroscopeViewHolder, position: Int) {
@@ -45,7 +46,7 @@ class HoroscopeAdapter(private var dataSet: List<Horoscope>, private val onItemC
         }
     }
 
-    //Este nñetodo sirve para actualizar los datos
+    //Este método sirve para actualizar los datos
     fun updateData (newDataset: List<Horoscope>) {
         updateData(newDataset, null)
     }
@@ -56,6 +57,7 @@ class HoroscopeAdapter(private var dataSet: List<Horoscope>, private val onItemC
     }
 
 }
+
 // Esta clase se encarga de guardarnos la vista y no tener que inflarla de nuevo
 class HoroscopeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val nameTextView: TextView
@@ -72,27 +74,15 @@ class HoroscopeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         descTextView.setText(horoscope.description)
         logoImageView.setImageResource(horoscope.logo)
     }
-
     // El texto que coincide con la busqueda se subraya
     fun highlight(text: String) {
         try {
             val highlighted = nameTextView.text.toString().highlight(text)
             nameTextView.text = highlighted
-        } catch (e: Exception) {
-            //Log.i("SEARCH", "No coincide la busqueda ($text) con el nombre (${nameTextView.text.toString()})")
-        }
+        } catch (e: Exception) { }
         try {
             val highlighted = descTextView.text.toString().highlight(text)
             descTextView.text = highlighted
-        } catch (e: Exception) {
-            //Log.i("SEARCH", "No coincide la busqueda ($text) con la descripción (${descTextView.text.toString()})")
-        }
+        } catch (e: Exception) { }
     }
-}
-
-fun String.highlight(text: String) : SpannableString {
-    val str = SpannableString(this)
-    val startIndex = str.indexOf(text, 0, true)
-    str.setSpan(BackgroundColorSpan(Color.YELLOW), startIndex, startIndex + text.length, 0)
-    return str
 }

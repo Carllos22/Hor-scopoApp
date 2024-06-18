@@ -1,8 +1,10 @@
-package com.example.horoscope
+package com.example.horoscope.data
 
-class HoroscopeProvider(id: String) {
+import com.example.horoscope.R
+
+class HoroscopeProvider {
     companion object {
-        private val horoscopelist: List<Horoscope> = listOf(
+        private val horoscopeList: List<Horoscope> = listOf(
             Horoscope("aries", R.string.horoscope_name_aries, R.string.horoscope_date_aries, R.drawable.aries_icon),
             Horoscope("taurus", R.string.horoscope_name_taurus, R.string.horoscope_date_taurus, R.drawable.taurus_icon),
             Horoscope("gemini", R.string.horoscope_name_gemini, R.string.horoscope_date_gemini, R.drawable.gemini_icon),
@@ -16,13 +18,11 @@ class HoroscopeProvider(id: String) {
             Horoscope("aquarius", R.string.horoscope_name_aquarius, R.string.horoscope_date_aquarius, R.drawable.aquarius_icon),
             Horoscope("pisces", R.string.horoscope_name_pisces, R.string.horoscope_date_pisces, R.drawable.pisces_icon)
         )
-
         fun findAll() : List<Horoscope> {
-            return horoscopelist
+            return horoscopeList
         }
-
         fun findById(id: String) : Horoscope? {
-            return horoscopelist.find { it.id == id }
+            return horoscopeList.find { it.id == id }
         }
     }
 }

@@ -1,16 +1,16 @@
-package com.example.horoscope
+package com.example.horoscope.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import com.example.horoscopeapp.HoroscopeAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.horoscope.data.Horoscope
+import com.example.horoscope.data.HoroscopeProvider
+import com.example.horoscope.R
+import com.example.horoscope.adapters.HoroscopeAdapter
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,17 +60,6 @@ class MainActivity : AppCompatActivity() {
         })
 
         return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_share -> {
-                Log.i("MENU", "Click en el menu de busqueda")
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     fun navigateToDetail(horoscope: Horoscope) {
