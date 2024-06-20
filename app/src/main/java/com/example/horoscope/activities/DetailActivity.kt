@@ -2,6 +2,7 @@ package com.example.horoscope.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -11,6 +12,15 @@ import com.example.horoscope.R
 import com.example.horoscope.data.Horoscope
 import com.example.horoscope.data.HoroscopeProvider
 import com.example.horoscope.utils.SessionManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+import java.io.BufferedReader
+import  java.io.InputStreamReader
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import kotlin.math.log
 
 class DetailActivity : AppCompatActivity() {
 
@@ -23,6 +33,7 @@ class DetailActivity : AppCompatActivity() {
 
     lateinit var imageView: ImageView
     lateinit var textView: TextView
+    lateinit var dailyHoroscopeTextView: TextView
 
     lateinit var favoriteMenuItem: MenuItem
 
@@ -42,6 +53,7 @@ class DetailActivity : AppCompatActivity() {
 
         textView = findViewById(R.id.textView)
         imageView = findViewById(R.id.imageView)
+        dailyHoroscopeTextView = findViewById(R.id.dailyHoroscopeTextView)
 
         textView.setText(horoscope.name)
         imageView.setImageResource(horoscope.logo)
@@ -49,9 +61,11 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.setTitle(horoscope.name)
         supportActionBar?.setSubtitle(horoscope.description)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        getDailyHoroscope()
     }
 
-    fun setFavoriteIcon () {
+    fun setFavoriteIcon() {
         if (isFavorite) {
             favoriteMenuItem.setIcon(R.drawable.ic_favorite_selected)
         } else {
@@ -72,6 +86,7 @@ class DetailActivity : AppCompatActivity() {
                 finish()
                 true
             }
+
             R.id.menu_favorite -> {
                 if (isFavorite) {
                     session.setFavoriteHoroscope("")
@@ -82,6 +97,7 @@ class DetailActivity : AppCompatActivity() {
                 setFavoriteIcon()
                 true
             }
+
             R.id.menu_share -> {
                 val sendIntent = Intent()
                 sendIntent.setAction(Intent.ACTION_SEND)
@@ -92,7 +108,52 @@ class DetailActivity : AppCompatActivity() {
                 startActivity(shareIntent)
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    fun getDailyHoroscope() {
+        // Llamada en hilo secundario
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Declaramos la url
+                val url =
+                    URL("https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${horoscope.id}&day=TODAY")
+                val con = url.openConnection() as HttpsURLConnection
+                con.requestMethod = "GET"
+                val responseCode = con.responseCode
+                Log.i("HTTP", "Response Code :: $responseCode")
+
+                // Preguntamos si hubo error o no
+                if (responseCode == HttpsURLConnection.HTTP_OK) { // Ha ido bien
+                    // Metemos el cuerpo de la respuesta en un BurfferedReader
+                    val bufferedReader = BufferedReader(InputStreamReader(con.inputStream))
+                    var inputLine: String?
+                    val response = StringBuffer()
+                    while (bufferedReader.readLine().also { inputLine = it } != null) {
+                        response.append(inputLine)
+                    }
+                    bufferedReader.close()
+
+                    // Parsear JSON
+                    val json = JSONObject(response.toString())
+                    val result = json.getJSONObject("data").getString("horoscope_data")
+
+                    // Ejecutamos en el hilo principal
+                    /*CoroutineScope(Dispatchers.Main).launch {
+                    }*/
+                    runOnUiThread {
+                        dailyHoroscopeTextView.text = result
+                    }
+
+                } else { // Hubo un error
+                    Log.w("HTTP", "Response :: Hubo un error")
+                }
+            } catch (e: Exception) {
+                Log.e("HTTP", "Response Error :: ${e.stackTraceToString()}")
+            }
+        }
+    }
 }
+
